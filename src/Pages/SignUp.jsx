@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
+import { Link } from 'react-router'
 
 function SignUp() {
   const [email, setEmail] = useState("")
@@ -18,7 +19,7 @@ function SignUp() {
           <p className='text-gray-600 mt-2'>join our community and start sharing your ideas</p>
         </div>
         {/* info */}
-        <div className='bg-white rounded-lg shadow-md p-7'>
+        <div className='bg-white rounded-lg shadow-md p-7 mb-4'>
           <form >
             <div className="mb-6">
               <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="email">
@@ -93,6 +94,14 @@ function SignUp() {
             </button>
 
           </form>
+            <div className="text-center mt-6">
+            <p className="text-gray-600 text-sm">
+              Already have an account?{' '}
+              <Link to="/signin" className="text-orange-600 hover:text-orange-800 font-semibold">
+                Sign in
+              </Link>
+            </p>
+          </div>
 
         </div>
       </div>
