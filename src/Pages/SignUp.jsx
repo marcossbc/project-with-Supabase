@@ -12,10 +12,10 @@ function SignUp() {
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-50 px-6'>
-      <div className='max-w-md '>
-        <div>
-          <h1>Create Account</h1>
-          <p>join communty  and start shering your ideas</p>
+      <div className='max-w-md w-full'>
+        <div className='text-center mb-10'>
+          <h1 className='text-3xl font-bold'>Create an Account</h1>
+          <p className='text-gray-600 mt-2'>join our community and start sharing your ideas</p>
         </div>
         {/* info */}
         <div className='bg-white rounded-lg shadow-md p-7'>
@@ -28,7 +28,7 @@ function SignUp() {
                 id="email"
                 type="email"
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                placeholder="your@email.com"
+                placeholder="enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
