@@ -67,6 +67,22 @@ function SignUp() {
               <p className="text-xs text-gray-500 mt-1">Must be at least 6 characters</p>
             </div>
 
+            
+            <div className="mb-6">
+              <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="confirmPassword">
+                Confirm Password
+              </label>
+              <input
+                id="confirmPassword"
+                type="password"
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </div>
+
           </form>
 
         </div>
