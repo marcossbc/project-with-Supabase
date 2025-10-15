@@ -83,6 +83,15 @@ function SignUp() {
               />
             </div>
 
+                 <button
+              type="submit"
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 transition duration-200 disabled:cursor-not-allowed disabled:bg-orange-500"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Creating Account...' : 'Create Account'}
+
+            </button>
+
           </form>
 
         </div>
