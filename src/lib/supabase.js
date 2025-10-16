@@ -5,7 +5,7 @@ const supabaseAnonyKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 const supabase = createClient(supabaseUrl, supabaseAnonyKey, {
     Auth: {
         Permissions: true,
-        autoRefreshToken: true
+        autoRefreshToken: true,
 
     },
     realtime: {

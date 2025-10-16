@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router'
+import { SignUp } from '../lib/Auth'
 
 function SignUp() {
   const [email, setEmail] = useState("")
