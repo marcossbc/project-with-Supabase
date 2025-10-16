@@ -12,6 +12,19 @@ function SignUp() {
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
 
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    setLoading(true)
+    setError(null)
+
+    if (password !== confirmPassword) {
+      setError("password do not match")
+      setLoading(false)
+      return
+    }
+
+  }
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-50 px-6'>
       <div className='max-w-md w-full'>
@@ -21,7 +34,16 @@ function SignUp() {
         </div>
         {/* info */}
         <div className='bg-white rounded-lg shadow-md p-7 mb-4'>
-          <form >
+          {/* error contolled */}
+          {
+            error && (
+              <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
+                {error}
+              </div>
+            )
+          }
+
+          <form onSubmit={handleSubmit} >
             <div className="mb-6">
               <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="email">
                 Email Address
@@ -36,7 +58,7 @@ function SignUp() {
                 required
               />
             </div>
-                <div className="mb-6">
+            <div className="mb-6">
               <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="username">
                 Username
               </label>
@@ -51,7 +73,7 @@ function SignUp() {
               />
             </div>
 
-            
+
             <div className="mb-6">
               <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="password">
                 Password
@@ -69,7 +91,7 @@ function SignUp() {
               <p className="text-xs text-gray-500 mt-1">Must be at least 6 characters</p>
             </div>
 
-            
+
             <div className="mb-6">
               <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="confirmPassword">
                 Confirm Password
@@ -85,7 +107,7 @@ function SignUp() {
               />
             </div>
 
-                 <button
+            <button
               type="submit"
               className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 transition duration-200 disabled:cursor-not-allowed disabled:bg-orange-500"
               disabled={isLoading}
@@ -95,7 +117,7 @@ function SignUp() {
             </button>
 
           </form>
-            <div className="text-center mt-6">
+          <div className="text-center mt-6">
             <p className="text-gray-600 text-sm">
               Already have an account?{' '}
               <Link to="/signin" className="text-orange-600 hover:text-orange-800 font-semibold">
