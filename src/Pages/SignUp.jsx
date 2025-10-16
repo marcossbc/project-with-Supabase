@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
-import { Link } from 'react-router'
-import { SignUp } from '../lib/Auth'
+import { Link, useNavigate } from 'react-router'
+import { SignUpPage } from '../lib/Auth'
 
 function SignUp() {
   const [email, setEmail] = useState("")
@@ -12,8 +12,8 @@ function SignUp() {
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
 
-
-  const handleSubmit = (event) => {
+  const navigate = useNavigate()
+  const  handleSubmit = async (event) => {
     event.preventDefault()
     setLoading(true)
     setError(null)
@@ -24,7 +24,31 @@ function SignUp() {
       return
     }
 
+    
+    try {
+
+
+      await SignUpPage(email, password, username)
+
+      setSuccess(true);
+
+      setTimeout(() => {
+        navigate('/signIn')
+      }, 3000)
+
+    } catch (error) {
+      console.error(error)
+      setError(error.message || "Failed to create account. Please try again")
+    } finally {
+      setLoading(false)
+    }
+
+
+
+
   }
+
+  
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-50 px-6'>
       <div className='max-w-md w-full'>
