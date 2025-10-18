@@ -123,3 +123,13 @@ export async function getUserProfile(userId) {
 
     return data
 }
+
+
+export function onAuthChange(callback){
+
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+            callback(session?.user || null, event)
+    })
+
+    return () => data.subscription.unsubscribe();
+}
