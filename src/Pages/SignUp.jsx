@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { SignUpPage } from '../lib/Auth'
+import { useAuth } from '../context/AuthContext'
 
 function SignUp() {
   const [email, setEmail] = useState("")
@@ -11,7 +12,8 @@ function SignUp() {
   const [isLoading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
-
+const info = useAuth()
+console.log({info})
   const navigate = useNavigate()
   const  handleSubmit = async (event) => {
     event.preventDefault()

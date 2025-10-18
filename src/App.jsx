@@ -9,11 +9,13 @@ import SignIn from './Pages/SignIn'
 import SignUp from './Pages/SignUp'
 import Footer from './Component/Footer'
 import Header from './Component/Header'
+import { AuthProvider } from './context/AuthContext'
 
 function App() {
 
 
   return (
+    < AuthProvider>
     <div className=''>
      {/* header */}
      <Header/>
@@ -35,6 +37,7 @@ function App() {
      <Footer/>
      {/* <Outlet/> */}
     </div>
+    </AuthProvider>
   )
 }
 

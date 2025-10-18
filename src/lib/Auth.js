@@ -124,7 +124,7 @@ export async function getUserProfile(userId) {
     return data
 }
 
-
+// login ama logout ka ayuu maamumlayaa
 export function onAuthChange(callback){
 
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
