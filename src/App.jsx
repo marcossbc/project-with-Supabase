@@ -10,33 +10,57 @@ import SignUp from './Pages/SignUp'
 import Footer from './Component/Footer'
 import Header from './Component/Header'
 import { AuthProvider } from './context/AuthContext'
+import UnAuthCreatedRoute from './Component/UnAuthcreatedRoute'
+import ManageArticalesPage from './Pages/manageArticalesPage'
+import ProfilePage from './Pages/ProfilePage'
 
 function App() {
 
 
   return (
     < AuthProvider>
-    <div className=''>
-     {/* header */}
-     <Header/>
-     <main>
-      {/* routers */}
-      <Routes>
-        <Route path='/' element={<Home/>} />
-        <Route path='/articles' element={<Articales/>} />
-        <Route path='/article/:id' element={<Articale/>} />
+      <div className=''>
+        {/* header */}
+        <Header />
+        <main>
+          {/* routers */}
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/articles' element={<Articales />} />
+            <Route path='/article/:id' element={<Articale />} />
 
-        {/* home page loggin */}
-        <Route path="/signIn" element={<SignIn/>}/>
-        <Route path="/signUp" element={<SignUp/>}/>
-          
-        
-      </Routes>
-     </main>
-     {/* footer */}
-     <Footer/>
-     {/* <Outlet/> */}
-    </div>
+            {/* home page loggin */}
+            <Route path="/signUp" element=
+              {
+                <UnAuthCreatedRoute>
+                  <SignUp />
+
+                </UnAuthCreatedRoute>
+
+              } />
+            <Route path="/signIn" element={
+              <UnAuthCreatedRoute>
+                <SignIn />
+              </UnAuthCreatedRoute>
+
+            } />
+
+            <Route path='/editor' element={< ArticleEditorPage />}>
+            </Route>
+            <Route path='/editor/:id' element={< ArticleEditorPage />}>
+            </Route>
+            <Route path='/manage-articales' element={<ManageArticalesPage />}>
+            </Route>
+            <Route path='/Profile-Page' element={<ProfilePage />}>
+            </Route>
+
+
+          </Routes>
+        </main>
+        {/* footer */}
+        <Footer />
+        {/* <Outlet/> */}
+      </div>
     </AuthProvider>
   )
 }

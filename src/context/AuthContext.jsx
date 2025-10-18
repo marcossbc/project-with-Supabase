@@ -51,6 +51,7 @@ export function  AuthProvider({children}){
         user,
         profile,
         isLoading,
+        isLoggedIn: !!user
       
         
     }
