@@ -13,6 +13,8 @@ import { AuthProvider } from './context/AuthContext'
 import UnAuthCreatedRoute from './Component/UnAuthcreatedRoute'
 import ManageArticalesPage from './Pages/manageArticalesPage'
 import ProfilePage from './Pages/ProfilePage'
+import ProtectedRoute from './Component/ProtectedRoute'
+import ArticleEditorPage from './Pages/ArticleEditorPage'
 
 function App() {
 
@@ -30,14 +32,12 @@ function App() {
             <Route path='/article/:id' element={<Articale />} />
 
             {/* home page loggin */}
-            <Route path="/signUp" element=
-              {
-                <UnAuthCreatedRoute>
-                  <SignUp />
+            <Route path="/signUp" element={
+              <UnAuthCreatedRoute>
+                <SignUp />
+              </UnAuthCreatedRoute>
 
-                </UnAuthCreatedRoute>
-
-              } />
+            } />
             <Route path="/signIn" element={
               <UnAuthCreatedRoute>
                 <SignIn />
@@ -45,14 +45,29 @@ function App() {
 
             } />
 
-            <Route path='/editor' element={< ArticleEditorPage />}>
+            <Route path='/editor' element={
+              <ProtectedRoute>
+                < ArticleEditorPage />
+              </ProtectedRoute>
+
+            }>
             </Route>
-            <Route path='/editor/:id' element={< ArticleEditorPage />}>
-            </Route>
-            <Route path='/manage-articales' element={<ManageArticalesPage />}>
-            </Route>
-            <Route path='/Profile-Page' element={<ProfilePage />}>
-            </Route>
+            <Route path='/editor/:id' element={
+              <ProtectedRoute>
+                < ArticleEditorPage />
+              </ProtectedRoute>
+
+            }
+            />
+            <Route path='/manage-articales' element={
+              <ProtectedRoute>
+                <ManageArticalesPage />
+              </ProtectedRoute>
+
+            }
+            />
+            <Route path='/Profile-Page' element={<ProfilePage />}
+            />
 
 
           </Routes>
