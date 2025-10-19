@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { FaUser } from "react-icons/fa";
 
 import { CiMenuBurger } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
-// import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 
 const Header = () => {
@@ -12,9 +12,8 @@ const Header = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-    const { isLoggedIn,setLoggedIn } = useState(false)
-
-    // console.log("user profile", profile)
+    const { isLoggedIn, profile, logout} = useAuth()
+    console.log("user profile", profile)
 
     const avatar_url = null;
     // "https://images.unsplash.com/photo-1631094237046-01a50d3d9a98?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -86,7 +85,7 @@ const Header = () => {
 
                                             <button
                                                 onClick={() => logout()}
-                                                className='block px-4 py-2 text-sm text-gray700 hover:bg-gray-100'>Signout</button>
+                                                className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'>Signout</button>
 
                                         </div>
                                     )}
