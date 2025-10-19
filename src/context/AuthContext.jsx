@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import { getUserProfile, onAuthChange } from "../lib/Auth"
+import supabase from "../lib/supabase"
 
 const AuthContext = createContext(null)
 
@@ -37,13 +38,22 @@ export function  AuthProvider({children}){
 
 
 
-    // const logout = async () => {
-    //     try {
-    //         await signOut()
-    //     } catch (error) {
-    //         console.error('Error signing out:', error)
-    //     }
-    // }
+     // ✅ Logout sax ah
+  const logout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+
+      setUser(null);
+      setProfile(null);
+      console.log("✅ Signed out successfully");
+
+      // redirect optional (haddii aad rabto in uu ku celiyo sign in page)
+      window.location.href = "/SignIn";
+    } catch (error) {
+      console.error("❌ Error signing out:", error.message);
+    }
+  };
 
 
 
@@ -51,7 +61,8 @@ export function  AuthProvider({children}){
         user,
         profile,
         isLoading,
-        isLoggedIn: !!user
+        isLoggedIn: !!user,
+        logout
       
         
     }

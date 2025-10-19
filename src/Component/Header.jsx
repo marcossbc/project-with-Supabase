@@ -13,7 +13,7 @@ const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const { isLoggedIn, profile, logout} = useAuth()
-    console.log("user profile", profile)
+    // console.log("user profile", profile)
 
     const avatar_url = null;
     // "https://images.unsplash.com/photo-1631094237046-01a50d3d9a98?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -80,8 +80,8 @@ const Header = () => {
                                             onMouseLeave={() => setIsDropdownOpen(false)}
                                         >
                                             <div className='absolute h-3 w-full top-[12px] '></div>
-                                            <Link className='block px-4 py-2 text-sm text-gray700 hover:bg-gray-100'>Your Profile</Link>
-                                            <Link className='block px-4 py-2 text-sm text-gray700 hover:bg-gray-100'>Manage Articles</Link>
+                                            <Link to="/profile" className='block px-4 py-2 text-sm text-gray700 hover:bg-gray-100'>Your Profile</Link>
+                                            <Link to="/manage-articales" className='block px-4 py-2 text-sm text-gray700 hover:bg-gray-100'>Manage Articles</Link>
 
                                             <button
                                                 onClick={() => logout()}
@@ -147,9 +147,8 @@ const Header = () => {
                             Profile
                         </Link>
                         <button
-                            onClick={() => {
-                                alert("hhhh")
-                            }}
+                            onClick={() => logout() }
+                            
 
                             className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
                         >
