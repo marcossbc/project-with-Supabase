@@ -3,6 +3,7 @@ import { FiCamera, FiMail, FiUser } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import { getUserProfile } from '../lib/Auth';
 import toast from 'react-hot-toast';
+import supabase from '../lib/supabase';
 
 function ProfilePage() {
 
@@ -19,7 +20,7 @@ function ProfilePage() {
             const file = e.target.files[0];
 
             if (file.size > 2 * 1024 * 1024) {
-                toast.error("heyyyy file size is too large", { position: "top-right" })
+                toast.error("hey file size is too large", { position: "top-right" })
                 return
             }
 
@@ -54,10 +55,25 @@ function ProfilePage() {
         }
     }
 
-     const handleSubmit= (e) => {
+     const handleSubmit=  async(e) => {
         e.preventDefault()
         try {
+            setLoading(true)
 
+            
+            let updates = { username }
+
+            // if file selected upload first
+            if (avatar) {
+
+                const fileExt = avatar.name.split(".").pop();
+                const fileName = `${user.id}-${Math.random().toString(36).substring(2)}`;
+                const filePath = `avatars/${fileName}.${fileExt}`;
+
+                const { error: uploadError } = await supabase.storage.from("avatars").upload(filePath, avatar);
+
+                if (uploadError) throw uploadError
+            }
             
         } catch (error) {
             toast.error(error, message || "error updating your profile");
