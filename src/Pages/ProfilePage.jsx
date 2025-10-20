@@ -55,12 +55,14 @@ function ProfilePage() {
         }
     }
 
-     const handleSubmit=  async(e) => {
-        e.preventDefault()
-        try {
-            setLoading(true)
+     const handleSubmit = async (e) => {
 
-            
+        e.preventDefault();
+
+        try {
+
+            setLoading(true);
+
             let updates = { username }
 
             // if file selected upload first
@@ -73,13 +75,44 @@ function ProfilePage() {
                 const { error: uploadError } = await supabase.storage.from("avatars").upload(filePath, avatar);
 
                 if (uploadError) throw uploadError
+
+                // get the uploaded url
+                const { data } = supabase.storage.from("avatars")
+                    .getPublicUrl(filePath);
+
+                updates = {
+                    ...updates,
+                    avatar_url: data.publicUrl
+                }
+
+                setAvatarUrl(data.publicUrl)
             }
-            
+
+            console.log("updates to be applied")
+
+            const { error, data } = await supabase
+
+                .from('users')
+                .update(updates)
+                .eq('id', user.id)
+                .select('username, avatar_url')
+                .single();
+
+            if (error) throw error
+
+            if (data) {
+                setAvatarUrl(data.avatar_url)
+                setUsername(data.username)
+            }
+
+            toast.success("Profile updated successfully")
+
         } catch (error) {
-            toast.error(error, message || "error updating your profile");
-            
+            toast.error(error.message || "error updating user profile")
         }
 
+
+    
      }
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
