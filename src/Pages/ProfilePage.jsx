@@ -1,17 +1,59 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FiCamera, FiMail, FiUser } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
+import { getUserProfile } from '../lib/Auth';
 
 function ProfilePage() {
-  
+
     const [loading, setLoading] = useState(false);
     const [username, setUsername] = useState(null);
     const [avatar, setAvatar] = useState(null);
     const [avatarUrl, setAvatarUrl] = useState(null);
 
-    const {user} = useAuth()
-  return (
-     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    const { user } = useAuth()
+
+    const handleAvatarChange = (e) => {
+
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+
+            if (file.size > 2 * 1024 * 1024) {
+                toast.error("heyyyy file size is too large", { position: "top-right" })
+                return
+            }
+
+            setAvatar(file)
+
+            const previewURL = URL.createObjectURL(file)
+            setAvatarUrl(previewURL)
+
+        }
+
+
+    }
+
+    useEffect(()=> {
+        if(user){
+            fetchUserProfile()
+        }
+    },[user])
+     const fetchUserProfile = async () => {
+        try {
+            setLoading(true);
+            const { username, avatar_url } = await getUserProfile(user.id);
+            if (username) {
+                setUsername(username);
+                setAvatarUrl(avatar_url)
+            }
+            return
+        } catch (error) {
+            console.log("error getting usr profile", error)
+        } finally {
+            setLoading(false)
+        }
+    }
+    return (
+        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto">
                 <div className="bg-white shadow-xl rounded-lg overflow-hidden">
                     {/* Profile Header */}
@@ -42,7 +84,7 @@ function ProfilePage() {
                                     id="avatar-upload"
                                     className=" hidden"
                                     accept="image/*"
-                                    // onChange={handleAvatarChange}
+                                    onChange={handleAvatarChange}
                                 />
                             </div>
 
@@ -57,8 +99,8 @@ function ProfilePage() {
 
                     {/* Profile form*/}
 
-                    <form  className="p-6 space-y-6">
-                      {/* onSubmit={handleSubmit} */}
+                    <form className="p-6 space-y-6">
+                        {/* onSubmit={handleSubmit} */}
 
                         <div className="space-y-6">
 
@@ -125,7 +167,7 @@ function ProfilePage() {
 
             </div>
         </div>
-  )
+    )
 }
 
 export default ProfilePage
