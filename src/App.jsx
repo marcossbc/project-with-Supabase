@@ -15,6 +15,7 @@ import ManageArticalesPage from './Pages/manageArticalesPage'
 import ProfilePage from './Pages/ProfilePage'
 import ProtectedRoute from './Component/ProtectedRoute'
 import ArticleEditorPage from './Pages/ArticleEditorPage'
+import { Toaster } from 'react-hot-toast';
 
 function App() {
 
@@ -82,6 +83,7 @@ function App() {
         <Footer />
         {/* <Outlet/> */}
       </div>
+      <Toaster/>
     </AuthProvider>
   )
 }
