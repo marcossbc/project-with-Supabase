@@ -541,7 +541,22 @@ const ArticleEditorPage = () => {
 
            {/* React Quill */}
 
-           <QuillEditor/>
+           {/* Content editor */}
+            <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Content
+                </label>
+                <div className="border border-gray-300 rounded-md overflow-hidden">
+                    <QuillEditor
+                        ref={editorRef}
+                        value={content}
+                        onChange={handleContentChange}
+                        placeholder={"Write your article content here..."}
+                        height="500"
+                    />
+                </div>
+            </div>
+
 
 
 
