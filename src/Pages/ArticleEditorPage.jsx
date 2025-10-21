@@ -556,6 +556,24 @@ const ArticleEditorPage = () => {
                     />
                 </div>
             </div>
+            
+            <div className="px-6 py-4 md:px-10 flex justify-end space-x-4">
+                <button
+                    onClick={() => handleSave(false)}
+
+                    className="px-6 py-3 border border-gray-300 rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                >
+                    {isEditMode ? "Update as Draft" : "Save as Draft"}
+                </button>
+
+                <button
+                    onClick={() => handleSave(true)}
+                    className="px-6 py-3 border border-transparent rounded-md shadow-sm text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                >
+                    {isEditMode ? "Update and Publish" : "Save and Publish"}
+                </button>
+            </div>
+
 
 
 
