@@ -22,9 +22,7 @@ function ArticleEditorPage() {
 
     const { user } = useAuth()
     const navigate = useNavigate()
-
-
-
+    
   return (
     
   )
