@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router'
-import { FiTwitter, FiInstagram, FiGithub } from 'react-icons/fi'
+import { FiTwitter, FiInstagram, FiGithub, FiLinkedin } from 'react-icons/fi'
 
 function Footer() {
   return (
@@ -53,6 +53,10 @@ function Footer() {
           <a href="#" className="text-gray-400 hover:text-gray-500">
             <span className="sr-only">GitHub</span>
             <FiGithub className="h-6 w-6" />
+          </a>
+          <a href="#" className="text-gray-400 hover:text-gray-500">
+            <span className="sr-only">LinkedIn</span>
+            <FiLinkedin className="h-6 w-6" />
           </a>
         </div>
 
