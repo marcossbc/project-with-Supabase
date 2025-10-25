@@ -34,3 +34,25 @@ export const createArticle = async (article) => {
 
     return data
 }
+
+export const getArticleById = async (id) => {
+
+
+    /*
+    article -> comments -> users = id, name, 
+    */
+
+    const { data, error } = await supabase
+        .from('articles')
+        .select(`*,
+           comments(id,content, created_at,
+               user:user_id(id, username, avatar_url)
+            ),
+            author:author_id(id, username, avatar_url)    
+            `)
+        .eq('id', id)
+        .single()
+
+    if (error) throw error
+    return data
+}
