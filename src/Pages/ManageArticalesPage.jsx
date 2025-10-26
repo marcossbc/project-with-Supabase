@@ -2,6 +2,7 @@ import React, { useOptimistic, useState, useTransition } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { FiLoader, FiPlus, FiTrash2 } from "react-icons/fi";
+import { deleteArticle } from "../lib/articles";
 
 function ManageArticalesPage() {
   const { user } = useAuth();
@@ -258,7 +259,7 @@ function ManageArticalesPage() {
 
             <div className="flex justify-end space-x-3">
               <button
-                // onClick={cancelDelete}
+                onClick={cancelDelete}
                 disabled={isDeleting}
                 className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200"
               >
@@ -267,7 +268,7 @@ function ManageArticalesPage() {
 
               <button
                 onClick={handleDelete}
-                // disabled={isDeleting}
+                disabled={isDeleting}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center"
               >
                 {isDeleting ? (

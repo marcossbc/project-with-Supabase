@@ -86,46 +86,46 @@ export const createArticle = async (article) => {
 /**
  * Update an existing article
  */
-export const updateArticle = async (id, updates) => {
-    console.log(`Attempting to update article with ID: ${id}`, updates);
+// export const updateArticle = async (id, updates) => {
+//     console.log(`Attempting to update article with ID: ${id}`, updates);
 
-    const tags = Array.isArray(updates.tags)
-        ? updates.tags
-        : updates.tags
-            ? [updates.tags]
-            : undefined;
+//     const tags = Array.isArray(updates.tags)
+//         ? updates.tags
+//         : updates.tags
+//             ? [updates.tags]
+//             : undefined;
 
-    const mapped = {
-        title: updates.title,
-        content: updates.content,
-        tags,
-        published: updates.published === true,
-        featured_image: updates.featuredImageUrl ?? updates.featured_image
-    };
+//     const mapped = {
+//         title: updates.title,
+//         content: updates.content,
+//         tags,
+//         published: updates.published === true,
+//         featured_image: updates.featuredImageUrl ?? updates.featured_image
+//     };
 
-    const payload = filterPayload(mapped, ALLOWED_COLUMNS);
-    console.log("Final payload for update (filtered):", payload);
+//     const payload = filterPayload(mapped, ALLOWED_COLUMNS);
+//     console.log("Final payload for update (filtered):", payload);
 
-    try {
-        const { data, error } = await supabase
-            .from("articles")
-            .update(payload)
-            .eq("id", id)
-            .select()
-            .single();
+//     try {
+//         const { data, error } = await supabase
+//             .from("articles")
+//             .update(payload)
+//             .eq("id", id)
+//             .select()
+//             .single();
 
-        if (error) {
-            console.error("Error updating article:", error);
-            throw error;
-        }
+//         if (error) {
+//             console.error("Error updating article:", error);
+//             throw error;
+//         }
 
-        console.log("Article updated successfully:", data);
-        return data;
-    } catch (err) {
-        console.error("Unexpected error updating article:", err);
-        throw err;
-    }
-};
+//         console.log("Article updated successfully:", data);
+//         return data;
+//     } catch (err) {
+//         console.error("Unexpected error updating article:", err);
+//         throw err;
+//     }
+// };
 
 export const getArticleByAuthor = async (authorId, { includeUnPublished = false, limit = 10, offset = 0 }) => {
 
