@@ -154,3 +154,43 @@ export const getArticleByAuthor = async (authorId, { includeUnPublished = false,
         count
     }
 }
+
+
+// delete articles and comment
+
+
+export const deleteArticle = async (id) => {
+
+    console.log(`Attempting to delete article with ID: ${id}`)
+
+
+    // First delete all associated comments
+
+    const { error: commentsError } = await supabase.from('comments').delete().eq('article_id', id)
+
+
+    if (commentsError) {
+        console.error('Error deleting comments:', commentsError)
+        console.error('Comments error details:', JSON.stringify(commentsError, null, 2))
+    } else {
+        console.log('Successfully deleted associated comments')
+    }
+
+
+    // Finally delete the article
+
+    const { data, error } = await supabase.from('articles').delete().eq('id', id).select();
+
+
+
+    if (error) {
+        console.error('Error deleting article:', error)
+        console.error('Article error details:', JSON.stringify(error, null, 2))
+        throw error
+
+    } else {
+        console.log(`Successfully deleted article with ID: ${id}`)
+    }
+
+    return data
+}
