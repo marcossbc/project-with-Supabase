@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { useAuth } from '../context/AuthContext'
-import { getArticleById } from '../lib/articles'
+// import { getArticleById } from '../lib/articles'
 import { FiCalendar } from 'react-icons/fi'
-import CommentSection from '../components/CommentSection'
+// import CommentSection from '../component/CommentSection'
 
 const Article = () => {
 
