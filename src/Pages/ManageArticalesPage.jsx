@@ -68,6 +68,10 @@ const ManageArticlesPage = () => {
   const confirmDelete = (article) => {
     setArticleToDelete(article);
   };
+  const cancelDelete = () => {
+    if (isDeleting) return;
+    setArticleToDelete(null);
+  };
 
   const handleDelete = async () => {
     if (!articleToDelete) return;
@@ -331,7 +335,7 @@ const ManageArticlesPage = () => {
 
             <div className="flex justify-end space-x-3">
               <button
-                // onClick={cancelDelete}
+                onClick={cancelDelete}
                 disabled={isDeleting}
                 className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200"
               >
@@ -340,7 +344,7 @@ const ManageArticlesPage = () => {
 
               <button
                 onClick={handleDelete}
-                // disabled={isDeleting}
+                disabled={isDeleting}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center"
               >
                 {isDeleting ? (
