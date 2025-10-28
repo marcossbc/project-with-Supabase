@@ -332,13 +332,13 @@ const CommentSection = ({ articleId }) => {
 
                     <div className="flex gap-3">
                         <Link
-                            to="/signin"
+                            to="/signIn"
                             className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-medium"
                         >
                             Sign in
                         </Link>
                         <Link
-                            to="/signup"
+                            to="/signUp"
                             className="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50"
                         >
                             Create account
