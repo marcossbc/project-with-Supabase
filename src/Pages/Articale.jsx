@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { useAuth } from '../context/AuthContext'
-// import { getArticleById } from '../lib/articles'
+import { getArticleById } from '../lib/articles'
 import { FiCalendar } from 'react-icons/fi'
 // import CommentSection from '../component/CommentSection'
 
@@ -166,7 +166,7 @@ const Article = () => {
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
 
             <div className="px-6 md:px-12 py-8">
-              <CommentSection articleId={id} />
+              {/* <CommentSection articleId={id} /> */}
             </div>
           </div>
         </div>

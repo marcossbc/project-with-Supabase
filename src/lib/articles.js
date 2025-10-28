@@ -127,70 +127,121 @@ export const updateArticle = async (id, updates) => {
     }
 };
 
-export const getArticleByAuthor = async (authorId, { includeUnPublished = false, limit = 10, offset = 0 }) => {
+export const getArticleByAuthor = async (
+  authorId,
+  { includeUnPublished = false, limit = 10, offset = 0 } = {}
+) => {
+  if (!authorId) {
+    throw new Error("authorId is required");
+  }
 
+  // Select articles and include comments count (assuming relation 'comments' exists)
+  // Also request exact count for pagination
+  let selectStr = `
+    *,
+    comments:comments(count)
+  `;
 
+  try {
     let query = supabase
-        .from('articles')
-        .select(`
-                        *,
-                        comments:comments(count)`)
-        .eq('author_id', authorId)
-        .order('created_at', { ascending: false })
-        .range(offset, offset + limit - 1)
-
+      .from("articles")
+      .select(selectStr, { count: "exact" })
+      .eq("author_id", authorId)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
 
     if (!includeUnPublished) {
-        query = query.eq('published', true)
+      query = query.eq("published", true);
     }
 
+    const { data, error, count } = await query;
 
-    const { data, error, count } = await query
+    if (error) {
+      console.error("getArticleByAuthor supabase error:", error);
+      throw error;
+    }
 
-    if (error) throw error
-
+    // Normalize: if data is null, return empty array
     return {
-        articles: data,
-        count
-    }
-}
+      articles: data ?? [],
+      count: typeof count === "number" ? count : (data ? data.length : 0),
+    };
+  } catch (err) {
+    console.error("Unexpected error in getArticleByAuthor:", err);
+    throw err;
+  }
+};
+
 
 
 // delete articles and comment
 
 
-export const deleteArticle = async (id) => {
+export const deleteArticle = async (id, { requireCommentsDeleted = false } = {}) => {
+  if (!id) throw new Error("Article id is required");
 
-    console.log(`Attempting to delete article with ID: ${id}`)
+  console.log(`Attempting to delete article with ID: ${id}`);
 
+  try {
+    // Option A: if you rely on ON DELETE CASCADE on the DB, you can skip manual comment deletion:
+    // const { data, error } = await supabase.from('articles').delete().eq('id', id).select();
+    // if (error) throw error;
 
-    // First delete all associated comments
-
-    const { error: commentsError } = await supabase.from('comments').delete().eq('article_id', id)
-
+    // Option B: manually delete comments first (if no cascade)
+    const { error: commentsError } = await supabase
+      .from("comments")
+      .delete()
+      .eq("article_id", id);
 
     if (commentsError) {
-        console.error('Error deleting comments:', commentsError)
-        console.error('Comments error details:', JSON.stringify(commentsError, null, 2))
+      console.error("Error deleting comments:", commentsError);
+      // If you require comment deletion to succeed, throw so caller knows.
+      if (requireCommentsDeleted) {
+        throw commentsError;
+      }
+      // otherwise warn and continue to attempt article deletion
     } else {
-        console.log('Successfully deleted associated comments')
+      console.log("Successfully deleted associated comments (if any)");
     }
 
-
-    // Finally delete the article
-
-    const { data, error } = await supabase.from('articles').delete().eq('id', id).select();
-
-
+    // Delete the article
+    const { data, error } = await supabase
+      .from("articles")
+      .delete()
+      .eq("id", id)
+      .select();
 
     if (error) {
-        console.error('Error deleting article:', error)
-        console.error('Article error details:', JSON.stringify(error, null, 2))
-        throw error
-
-    } else {
-        console.log(`Successfully deleted article with ID: ${id}`)
+      console.error("Error deleting article:", error);
+      throw error;
     }
 
+    console.log(`Successfully deleted article with ID: ${id}`);
+    return data;
+  } catch (err) {
+    console.error("Unexpected error in deleteArticle:", err);
+    throw err;
+  }
+};
+
+export const getArticleById = async (id) => {
+
+
+    /*
+    article -> comments -> users = id, name, 
+    */
+
+    const { data, error } = await supabase
+        .from('articles')
+        .select(`*,
+           comments(id,content, created_at,
+               user:user_id(id, username, avatar_url)
+            ),
+            author:author_id(id, username, avatar_url)    
+            `)
+        .eq('id', id)
+        .single()
+
+    if (error) throw error
     return data
 }

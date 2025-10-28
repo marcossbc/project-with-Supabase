@@ -1,10 +1,23 @@
-import React, { useOptimistic, useState, useTransition } from "react";
-import { Link, useNavigate } from "react-router";
+import React, {
+  useEffect,
+  useOptimistic,
+  useState,
+  useTransition,
+} from "react";
 import { useAuth } from "../context/AuthContext";
-import { FiLoader, FiPlus, FiTrash2 } from "react-icons/fi";
-import { deleteArticle } from "../lib/articles";
+import { Link, useNavigate } from "react-router";
+import { deleteArticle, getArticleByAuthor } from "../lib/articles";
+import toast from "react-hot-toast";
+import {
+  FiAlertTriangle,
+  FiEdit2,
+  FiEye,
+  FiLoader,
+  FiPlus,
+  FiTrash2,
+} from "react-icons/fi";
 
-function ManageArticalesPage() {
+const ManageArticlesPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [articles, setArticles] = useState([]);
@@ -21,6 +34,90 @@ function ManageArticalesPage() {
       state.filter((article) => article.id !== articlesToRemove)
   );
 
+  useEffect(() => {
+    if (user) {
+      fetchUserArticles();
+    } else {
+      navigate("signin");
+    }
+  }, [user]);
+
+  const fetchUserArticles = async () => {
+    try {
+      setLoading(true);
+      const { articles, count } = await getArticleByAuthor(user.id, {
+        includeUnPublished: true,
+        limit: 100,
+      });
+
+      setArticles(articles);
+      setTotalCount(count);
+
+      console.log("articles", articles);
+    } catch (error) {
+      console.error("Error fetching articles:", error);
+      setError("Failed to load your articles. Please try again.");
+      toast.error("Failed to load your articles");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // confirm delete
+
+  const confirmDelete = (article) => {
+    setArticleToDelete(article);
+  };
+
+  const handleDelete = async () => {
+    if (!articleToDelete) return;
+
+    try {
+      setIsDeleting(true);
+      console.log("Starting deletion process for article:", articleToDelete.id);
+
+      // Wrap the optimistic update in a transition
+
+      startTransition(() => updateOptimisticArticles(articleToDelete.id));
+
+      const result = await deleteArticle(articleToDelete.id);
+
+      setArticles((prevArticles) =>
+        prevArticles.filter((article) => article.id !== articleToDelete.id)
+      );
+      setTotalCount((prevCount) => prevCount - 1);
+
+      setArticleToDelete(null);
+    } catch (error) {
+      console.error("Error deleting article in component:", error);
+      console.error("Error details:", JSON.stringify(error, null, 2));
+      toast.error(
+        `Failed to delete article: ${error.message || "Unknown error"}`
+      );
+
+      // Fetch articles again to restore state in case optimistic update was applied
+      fetchUserArticles();
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  /*
+
+
+    ### `year: 'numeric'`
+        This displays the year as a full number.
+        - Example: `2023` instead of `'23`
+
+        ### `month: 'long'`
+        This displays the full name of the month.
+        - Example: `September` instead of `Sep` or `9`
+
+        ### `day: 'numeric'`
+        This displays the day of the month as a number without leading zeros.
+        - Example: `5` instead of `05`
+    */
+
   const formatDate = (dateString) => {
     if (!dateString) return "";
 
@@ -32,46 +129,13 @@ function ManageArticalesPage() {
     });
   };
 
-  
-    const confirmDelete = (article) => {
-        setArticleToDelete(article)
-    }
-
-
-    const handleDelete = async () => {
-
-        if (!articleToDelete) return
-
-        try {
-
-            setIsDeleting(true)
-            console.log('Starting deletion process for article:', articleToDelete.id)
-
-            // Wrap the optimistic update in a transition
-
-            startTransition(() => updateOptimisticArticles(articleToDelete.id))
-
-            const result = await deleteArticle(articleToDelete.id)
-
-            setArticles(prevArticles => prevArticles.filter(article => article.id !== articleToDelete.id))
-            setTotalCount(prevCount => prevCount - 1);
-
-            setArticleToDelete(null)
-
-        } catch (error) {
-
-            console.error('Error deleting article in component:', error)
-            console.error('Error details:', JSON.stringify(error, null, 2))
-            toast.error(`Failed to delete article: ${error.message || 'Unknown error'}`)
-
-            // Fetch articles again to restore state in case optimistic update was applied
-            fetchUserArticles()
-
-        } finally {
-            setIsDeleting(false)
-        }
-
-    }
+  // Separate published and draft articles
+  const publishedArticles = optimisticArticles.filter(
+    (article) => article.published
+  );
+  const draftArticles = optimisticArticles.filter(
+    (article) => !article.published
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white pb-12">
@@ -95,6 +159,12 @@ function ManageArticalesPage() {
           </div>
         </div>
       </div>
+
+      {/* 
+                
+                loading ? (loading info) : error ? (error info) : is there is data ?  (show me the data) : "no data"
+                
+                */}
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -245,6 +315,8 @@ function ManageArticalesPage() {
         )}{" "}
       </div>
 
+      {/* delete confirmation modal */}
+
       {articleToDelete && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
@@ -259,7 +331,7 @@ function ManageArticalesPage() {
 
             <div className="flex justify-end space-x-3">
               <button
-                onClick={cancelDelete}
+                // onClick={cancelDelete}
                 disabled={isDeleting}
                 className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200"
               >
@@ -268,7 +340,7 @@ function ManageArticalesPage() {
 
               <button
                 onClick={handleDelete}
-                disabled={isDeleting}
+                // disabled={isDeleting}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center"
               >
                 {isDeleting ? (
@@ -289,6 +361,6 @@ function ManageArticalesPage() {
       )}
     </div>
   );
-}
+};
 
-export default ManageArticalesPage;
+export default ManageArticlesPage;
