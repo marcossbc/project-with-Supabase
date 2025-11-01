@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { FiEdit2, FiMessageSquare, FiSend, FiTrash2 } from 'react-icons/fi';
 import supabase from '../lib/supabase';
 
-// import { formatDistanceToNow } from 'date-fns'
+import { formatDistanceToNow } from 'date-fns'
 import { Link } from 'react-router';
 
 const CommentSection = ({ articleId }) => {
