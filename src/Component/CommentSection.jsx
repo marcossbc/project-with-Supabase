@@ -311,7 +311,7 @@ const CommentSection = ({ articleId }) => {
                                 <button
                                     type="submit"
                                     className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 flex items-center gap-2"
-                                // disabled={submitting || !newComment.trim()}
+                                disabled={submitting || !newComment.trim()}
                                 >
                                     {submitting ? 'Posting...' : 'Post Comment'}
                                     <FiSend className={submitting ? 'opacity-0' : 'opacity-100'} />
