@@ -1,14 +1,14 @@
 // components/ArticlesList.jsx
 import React, { useEffect, useState } from 'react';
-import supabase from '../lib/supabase'; // hubi path-ka saxda ah
-import ArticleCard from '../Pages/Articales';
+import supabase from '../lib/supabase';
+import ArticleCard from './ArticleCard';
 
 export default function ArticlesList() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // helper to compute reading time from content text
+  // helper: compute reading time
   const computeReadingTime = (text) => {
     if (!text) return '1 min';
     const words = text.trim().split(/\s+/).length;
@@ -18,64 +18,59 @@ export default function ArticlesList() {
 
   useEffect(() => {
     let mounted = true;
+
     const fetchArticles = async () => {
       setLoading(true);
       try {
-        /**
-         * Example select: if you have a foreign key relation to authors table,
-         * you can use: .select('id, title, excerpt, slug, thumbnail, published_at, content, tags, author:authors(id, username, avatar_url)')
-         * Otherwise adjust to your DB schema.
-         */
         const { data, error } = await supabase
           .from('articles')
-          .select(`id, title, excerpt, slug, thumbnail, published_at, content, tags, author:authors(id, username, avatar_url)`)
+          .select(`
+            id,
+            title,
+            excerpt,
+            slug,
+            thumbnail,
+            published_at,
+            content,
+            tags,
+            author:author_id(id, username, avatar_url)
+          `)
           .order('published_at', { ascending: false })
           .limit(50);
 
         if (error) throw error;
 
-        // map and ensure thumbnail public url if stored in storage bucket
-        const mapped = await Promise.all(
-          (data || []).map(async (item) => {
-            let thumbnailUrl = item.thumbnail || null;
+        const mapped = data.map((item) => {
+          // Thumbnail URL if using storage
+          let thumbnailUrl = item.thumbnail;
+          if (thumbnailUrl && !thumbnailUrl.startsWith('http')) {
+            const { data: pu } = supabase.storage.from('thumbnails').getPublicUrl(thumbnailUrl);
+            thumbnailUrl = pu.publicUrl;
+          }
 
-            // if thumbnail looks like a storage path (e.g., startsWith 'thumbnails/')
-            // attempt to get public URL from storage bucket "thumbnails"
-            if (thumbnailUrl && !thumbnailUrl.startsWith('http')) {
-              try {
-                const { data: pu } = supabase.storage.from('thumbnails').getPublicUrl(thumbnailUrl);
-                thumbnailUrl = pu.publicUrl;
-              } catch (err) {
-                console.warn('thumbnail public url error', err);
-              }
-            }
+          const author = item.author?.[0]
+            ? { name: item.author[0].username, avatar: item.author[0].avatar_url }
+            : { name: 'Author', avatar: null };
 
-            const author = item.author?.[0]
-              ? { name: item.author[0].username, avatar: item.author[0].avatar_url }
-              : { name: 'Author', avatar: null };
-
-            const readingTime = computeReadingTime(item.content || item.excerpt || '');
-
-            return {
-              id: item.id,
-              title: item.title,
-              excerpt: item.excerpt,
-              slug: item.slug,
-              thumbnail: thumbnailUrl,
-              author,
-              publishedAt: item.published_at,
-              readingTime,
-              tags: item.tags || []
-            };
-          })
-        );
+          return {
+            id: item.id,
+            title: item.title,
+            excerpt: item.excerpt || item.content?.slice(0, 120),
+            slug: item.slug,
+            thumbnail: thumbnailUrl,
+            author,
+            publishedAt: item.published_at,
+            readingTime: computeReadingTime(item.content || item.excerpt || ''),
+            tags: item.tags || []
+          };
+        });
 
         if (mounted) {
           setArticles(mapped);
           setError(null);
         }
       } catch (err) {
-        console.error('fetchArticles error', err);
+        console.error('Error fetching articles:', err);
         if (mounted) setError(err.message || 'Error loading articles');
       } finally {
         if (mounted) setLoading(false);
@@ -84,15 +79,12 @@ export default function ArticlesList() {
 
     fetchArticles();
 
-    return () => {
-      mounted = false;
-    };
+    return () => (mounted = false);
   }, []);
 
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* simple skeleton placeholders */}
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="animate-pulse bg-white rounded-lg h-64" />
         ))}
@@ -100,9 +92,8 @@ export default function ArticlesList() {
     );
   }
 
-  if (error) {
-    return <div className="text-red-600">Error: {error}</div>;
-  }
+  if (error) return <div className="text-red-600">Error: {error}</div>;
+  if (articles.length === 0) return <div>No articles found.</div>;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

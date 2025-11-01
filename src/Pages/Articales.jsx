@@ -1,9 +1,9 @@
 // components/ArticleCard.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiBookmark, FiHeart } from 'react-icons/fi';
 
-export default function ArticleCard({
+export default function Articles({
   id,
   title,
   excerpt,
@@ -17,42 +17,62 @@ export default function ArticleCard({
   const [liked, setLiked] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
 
+  // Initialize bookmark from localStorage
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(window.localStorage.getItem('bookmarks') || '[]');
+      const exists = stored.some((item) => item.id === id);
+      setBookmarked(exists);
+    } catch (err) {
+      console.error('Bookmark init error', err);
+    }
+  }, [id]);
+
   const toggleLike = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setLiked((v) => !v);
-    // TODO: persist to backend if logged in
   };
 
   const toggleBookmark = (e) => {
     e.preventDefault();
-    setBookmarked((v) => !v);
+    e.stopPropagation();
+    setBookmarked((v) => {
+      const next = !v;
+      try {
+        const key = 'bookmarks';
+        const stored = JSON.parse(window.localStorage.getItem(key) || '[]');
 
-    const key = 'bookmarks';
-    try {
-      const stored = JSON.parse(window.localStorage.getItem(key) || '[]');
-      if (!bookmarked) {
-        window.localStorage.setItem(key, JSON.stringify([...stored, { id, title, slug }]));
-      } else {
-        window.localStorage.setItem(key, JSON.stringify(stored.filter(item => item.id !== id)));
+        if (next) {
+          window.localStorage.setItem(key, JSON.stringify([...stored, { id, title, slug }]));
+        } else {
+          window.localStorage.setItem(
+            key,
+            JSON.stringify(stored.filter((item) => item.id !== id))
+          );
+        }
+      } catch (err) {
+        console.error('Bookmark toggle error', err);
       }
-    } catch (err) {
-      console.error('bookmark error', err);
-    }
+      return next;
+    });
   };
 
   return (
     <article className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-200">
-      <Link to={`/ArticlesList/${slug}`} className="block group">
+      <Link to={`/articles/${slug}`} className="block group">
         <div className="relative h-44 sm:h-52 w-full overflow-hidden bg-gray-100">
           {thumbnail ? (
             <img
               src={thumbnail}
-              alt={title}
+              alt={title || 'Article image'}
               loading="lazy"
               className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
+            <div className="w-full h-full flex items-center justify-center text-gray-400">
+              No Image
+            </div>
           )}
         </div>
 
@@ -70,24 +90,29 @@ export default function ArticleCard({
               </div>
               <div className="text-xs text-gray-500">
                 <div className="font-medium text-gray-900">{author.name}</div>
-                <div>{publishedAt ? new Date(publishedAt).toLocaleDateString() : ''} • {readingTime}</div>
+                <div>
+                  {publishedAt ? new Date(publishedAt).toLocaleDateString() : ''} • {readingTime}
+                </div>
               </div>
             </div>
 
             <div className="flex items-center space-x-2">
               <button
+                type="button"
                 onClick={toggleLike}
                 className="p-2 rounded-md hover:bg-gray-100 transition"
                 aria-pressed={liked}
-                aria-label="Like article"
+                aria-label={liked ? 'Unlike article' : 'Like article'}
               >
                 <FiHeart className={`w-5 h-5 ${liked ? 'text-rose-500' : 'text-gray-400'}`} />
               </button>
+
               <button
+                type="button"
                 onClick={toggleBookmark}
                 className="p-2 rounded-md hover:bg-gray-100 transition"
                 aria-pressed={bookmarked}
-                aria-label="Bookmark article"
+                aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark article'}
               >
                 <FiBookmark className={`w-5 h-5 ${bookmarked ? 'text-amber-500' : 'text-gray-400'}`} />
               </button>
