@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom"; // react-router-dom
 import { useAuth } from "../context/AuthContext";
 import { getArticleById } from "../lib/articles";
 import { FiCalendar } from "react-icons/fi";
-import CommentSection from "../Component/CommentSection";
+import CommentSection from "../components/CommentSection";
 
 const Article = () => {
   const { id } = useParams();
