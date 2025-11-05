@@ -3,7 +3,7 @@ import toast from 'react-hot-toast'
 import { FiArrowRight, FiTrendingUp } from 'react-icons/fi'
 import { Link } from 'react-router'
 import supabase from '../lib/supabase'
-import ArticleCard from '../Component/ArticleCard'
+import ArticleCard from '../components/ArticleCard'
 
 const Home = () => {
   const [featuredArticles, setFeaturedArticles] = useState([])

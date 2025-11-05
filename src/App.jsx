@@ -8,12 +8,14 @@ import SignUp from "./Pages/SignUp";
 import Footer from "./Component/Footer";
 import Header from "./Component/Header";
 import { AuthProvider } from "./context/AuthContext";
-import UnAuthCreatedRoute from "./Component/UnAuthcreatedRoute";
-import ManageArticlesPage from "./Pages/ManageArticalesPage";
+// import UnAuthCreatedRoute from "./components/UnAuthCreatedRoute";
+// import ManageArticlesPage from "./Pages/ManageArticalesPage";
 import ProfilePage from "./Pages/ProfilePage";
-import ProtectedRoute from "./Component/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 import ArticleEditorPage from "./Pages/ArticleEditorPage";
 import { Toaster } from "react-hot-toast";
+import UnAuthCreatedRoute from "./components/UnAuthcreatedRoute";
+import ManageArticlesPage from "./Pages/manageArticalesPage";
 
 function App() {
   return (
